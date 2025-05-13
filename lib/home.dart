@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                 color: Color(0xff02003C),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black,
                     blurRadius: 4,
                     offset: Offset(0, -2),
                   ),
@@ -269,7 +269,10 @@ class MyAppBar extends StatelessWidget {
                 Text(text, style: TextStyle(color: Colors.white, fontSize: 25)),
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.circle_outlined, color: Colors.white),
+                  icon: Icon(
+                    Icons.account_circle_outlined,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
