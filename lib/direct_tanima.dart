@@ -5,22 +5,33 @@ class DirectTanimaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    double screenWidth = size.width;
+    double screenHeight = size.height;
+
+    // Responsive values
+    double appBarHeight = screenHeight * 0.12;
+    double titleFontSize = screenWidth * 0.06;
+    double iconSize = screenWidth * 0.06;
+    double padding = screenWidth * 0.06;
+    double spacing = screenHeight * 0.02;
+
     return Scaffold(
       body: Column(
         children: [
           // App Bar
           Container(
             width: double.infinity,
-            height: 98,
+            height: appBarHeight,
             decoration: BoxDecoration(color: Color(0xff02003C)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 8.0,
-                    left: 8,
-                    right: 8,
+                  padding: EdgeInsets.only(
+                    bottom: screenHeight * 0.01,
+                    left: screenWidth * 0.02,
+                    right: screenWidth * 0.02,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -29,17 +40,25 @@ class DirectTanimaPage extends StatelessWidget {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                          size: iconSize,
+                        ),
                       ),
                       Text(
                         "Tanıma",
-                        style: TextStyle(color: Colors.white, fontSize: 25),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: titleFontSize,
+                        ),
                       ),
                       IconButton(
                         onPressed: () {},
                         icon: Icon(
                           Icons.account_circle_outlined,
                           color: Colors.white,
+                          size: iconSize,
                         ),
                       ),
                     ],
@@ -51,7 +70,10 @@ class DirectTanimaPage extends StatelessWidget {
           // Content
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              padding: EdgeInsets.symmetric(
+                horizontal: padding,
+                vertical: padding,
+              ),
               child: Column(
                 children: [
                   Expanded(
@@ -64,7 +86,7 @@ class DirectTanimaPage extends StatelessWidget {
                             onTap: () {},
                           ),
                         ),
-                        SizedBox(width: 16),
+                        SizedBox(width: spacing),
                         Expanded(
                           child: _TanimaButton(
                             icon: Icons.mic,
@@ -75,7 +97,7 @@ class DirectTanimaPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: spacing),
                   Expanded(
                     child: _TanimaButton(
                       icon: Icons.image,
@@ -84,7 +106,7 @@ class DirectTanimaPage extends StatelessWidget {
                       wide: true,
                     ),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: spacing),
                   Expanded(
                     child: _TanimaButton(
                       icon: Icons.help_outline,
@@ -119,22 +141,34 @@ class _TanimaButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    double screenWidth = size.width;
+    double screenHeight = size.height;
+
+    // Responsive values
+    double iconSize = screenWidth * 0.08;
+    double fontSize = screenWidth * 0.04;
+    double borderRadius = screenWidth * 0.04;
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(borderRadius),
       child: Container(
         width: wide ? double.infinity : null,
         height: double.infinity,
         decoration: BoxDecoration(
           color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: Colors.black87),
-            SizedBox(height: 8),
-            Text(label, style: TextStyle(fontSize: 18, color: Colors.black87)),
+            Icon(icon, size: iconSize, color: Colors.black87),
+            SizedBox(height: screenHeight * 0.01),
+            Text(
+              label,
+              style: TextStyle(fontSize: fontSize, color: Colors.black87),
+            ),
           ],
         ),
       ),
