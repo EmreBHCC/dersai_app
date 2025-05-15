@@ -5,39 +5,89 @@ import 'components/note_card.dart';
 import 'components/add_note_button.dart';
 import 'components/bottom_navigation.dart';
 import 'components/custom_app_bar.dart';
+import 'components/color_picker.dart';
 import 'providers/note_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   Future<void> _addNote(BuildContext context) async {
+    Size size = MediaQuery.of(context).size;
+    String input = "";
     String? newNote = await showDialog<String>(
       context: context,
       builder: (context) {
-        String input = "";
-        return AlertDialog(
-          title: Text('Yeni Not Ekle'),
-          content: TextField(
-            autofocus: true,
-            onChanged: (value) => input = value,
-            decoration: InputDecoration(hintText: 'Not başlığı girin'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('İptal'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(input),
-              child: Text('Ekle'),
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              insetPadding: EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 8.0,
+              ),
+              title: Text('Yeni Not Ekle'),
+              content: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.7,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        autofocus: true,
+                        onChanged: (value) {
+                          setState(() {
+                            input = value;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Not başlığı girin',
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      ColorPicker(
+                        screenWidth: size.width,
+                        screenHeight: size.height,
+                        note: input.isEmpty ? 'temp' : input,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    context.read<NoteProvider>().clearTempColors();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('İptal'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (input.isNotEmpty) {
+                      final tempColor = context
+                          .read<NoteProvider>()
+                          .getSelectedColor(input.isEmpty ? 'temp' : input);
+                      context.read<NoteProvider>().setSelectedColor(tempColor);
+                      Navigator.of(context).pop(input);
+                    }
+                  },
+                  child: Text('Ekle'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
 
     if (newNote != null && newNote.isNotEmpty) {
-      context.read<NoteProvider>().addNote(newNote);
+      final noteProvider = context.read<NoteProvider>();
+      final selectedColor = noteProvider.selectedColor;
+      noteProvider.addNote(newNote);
+      if (selectedColor != null) {
+        noteProvider.setTempColor(newNote, selectedColor);
+      }
     }
   }
 
@@ -50,6 +100,8 @@ class HomePage extends StatelessWidget {
     // Responsive values
     double titleFontSize = screenWidth * 0.06;
     int crossAxisCount = screenWidth > 600 ? 3 : 2;
+
+    final noteProvider = Provider.of<NoteProvider>(context, listen: false);
 
     return Scaffold(
       body: Stack(
@@ -64,10 +116,9 @@ class HomePage extends StatelessWidget {
                   );
                 },
                 onProfileTap: () {
-                  Navigator.pushNamed(context, '/user'); // ✅ Doğru yer
+                  Navigator.pushNamed(context, '/user');
                 },
               ),
-
               SizedBox(height: screenHeight * 0.02),
               SizedBox(
                 height: screenHeight * 0.1,
@@ -120,9 +171,9 @@ class HomePage extends StatelessWidget {
             ],
           ),
           Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
+            left: 10,
+            right: 10,
+            bottom: 20,
             child: BottomNavigation(
               screenWidth: screenWidth,
               screenHeight: screenHeight,

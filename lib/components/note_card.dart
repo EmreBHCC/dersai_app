@@ -18,6 +18,7 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final noteProvider = Provider.of<NoteProvider>(context, listen: false);
     return Container(
       height: screenHeight,
       margin: EdgeInsets.only(
@@ -45,10 +46,7 @@ class NoteCard extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                baseColor,
-                context.read<NoteProvider>().darken(baseColor, 0.4),
-              ],
+              colors: [baseColor, noteProvider.darken(baseColor, 0.4)],
             ),
             boxShadow: [
               BoxShadow(

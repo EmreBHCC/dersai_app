@@ -45,6 +45,19 @@ class ColorPicker extends StatelessWidget {
                           noteProvider.setTempColor(note, color);
                         }
                       },
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        margin: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border:
+                              isSelected
+                                  ? Border.all(color: Colors.black, width: 3)
+                                  : null,
+                        ),
+                      ),
                     );
                   }).toList(),
             ),
