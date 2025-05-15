@@ -65,6 +65,16 @@ class HomePage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     if (input.isNotEmpty) {
+                      // Check if note with same name exists
+                      if (context.read<NoteProvider>().notes.contains(input)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Bu isimde bir not zaten mevcut!'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
                       final tempColor = context
                           .read<NoteProvider>()
                           .getSelectedColor(input.isEmpty ? 'temp' : input);
