@@ -25,15 +25,12 @@ class _DirectTanimaPageState extends State<DirectTanimaPage> {
 
   RxList idList = [].obs;
 
-  late MyImageProvider imageProvider;
-
   @override
   void initState() {
     super.initState();
-    imageProvider = Provider.of<MyImageProvider>(context, listen: false);
   }
 
-  Future<void> pickImage() async {
+  Future<void> pickImage(BuildContext context) async {
     result.clear();
     final pickedFile = await _imagepicker.pickImage(
       source: ImageSource.gallery,
@@ -44,6 +41,7 @@ class _DirectTanimaPageState extends State<DirectTanimaPage> {
       print('user cancelled the image selection');
       return;
     } else {
+      final imageProvider = Provider.of<MyImageProvider>(context, listen: false);
       await imageProvider.uploadImage(File(pickedFile.path));
     }
   }
@@ -54,13 +52,12 @@ class _DirectTanimaPageState extends State<DirectTanimaPage> {
     await Future.delayed(const Duration(seconds: 2));
     result.add("Simulated speech-to-text result");
     print("Simulated speech-to-text result");
-    
   }
-
 
   @override
   Widget build(BuildContext context) {
     Provider.of<NoteProvider>(context, listen: false);
+    final imageProviderWatch = Provider.of<MyImageProvider>(context);
     Size size = MediaQuery.of(context).size;
     double screenWidth = size.width;
     double screenHeight = size.height;
@@ -92,7 +89,7 @@ class _DirectTanimaPageState extends State<DirectTanimaPage> {
                             icon: Icons.camera_alt,
                             label: 'Kamera',
                             onTap: () {
-                              pickImage();
+                              pickImage(context);
                             },
                           ),
                         ),
@@ -127,13 +124,26 @@ class _DirectTanimaPageState extends State<DirectTanimaPage> {
                       wide: true,
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Container(
-                    child: Image.network(
-                    
-                      imageProvider.decoded_url!,
-                    )
-                  )
+                  SizedBox(height: spacing),
+                  // Görsel için daha fazla alan ayır ve height parametresini kaldır
+                  Expanded(
+                    flex: 3,
+                    child: (imageProviderWatch.decoded_url != null &&
+                            imageProviderWatch.decoded_url!.isNotEmpty)
+                        ? Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Image.network(
+                              imageProviderWatch.decoded_url!,
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                              // height: MediaQuery.of(context).size.height * 0.25, // kaldırıldı
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(Icons.broken_image, size: 48),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                  ),
                 ],
               ),
             ),

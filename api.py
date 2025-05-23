@@ -11,22 +11,24 @@ from ultralytics import YOLO
 
 app = Flask(__name__)
 CORS(app, resources={r"/detect-board": {"origins": "*"}})
+# kendine göre değiştirirsin
+model_path = 'C:/Users/kurt_/dersai_app/best.pt'
+# 🔍 YOLO modelini yükle
+detect_board_model = YOLO(model_path)
 
-detect_board_model = YOLO('C:/Users/emre_/Documents/Github/YoloV11/runs/detect/train/weights/best.pt')
-detect_board_model.names = {
+# ✅ Kendi sınıf isimlerini burada tanımla
+CUSTOM_NAMES = {
     0: 'math',
     1: 'text',
     2: 'image',
-    
 }
 
-# 🔑 Imgur API Bilgisi (gizli tutulmalı - çevre değişkeni önerilir)
+# 🔑 Imgur API Bilgisi
 IMGUR_CLIENT_ID = "Client-ID bd47c0f13c89751"
 
 # 📤 Görseli Imgur'a yükleme
 def upload_to_imgur(image_bytes):
     headers = {"Authorization": IMGUR_CLIENT_ID}
-    
     data = {
         "image": base64.b64encode(image_bytes).decode("utf-8"),
         "type": "base64"
@@ -36,7 +38,8 @@ def upload_to_imgur(image_bytes):
         return response.json()["data"]["link"]
     else:
         print("Imgur yükleme hatası:", response.text)
-        raise Exception("Imgur yükleme başarisiz oldu")
+        raise Exception("Imgur yükleme başarısız oldu")
+
 @app.route('/detect-board', methods=['POST'])
 def detect_from_url():
     try:
@@ -57,7 +60,7 @@ def detect_from_url():
         img_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
 
         # 🧠 YOLO ile tespit yap
-        results = detect_board_model(img_bgr)  # 🔥 Buraya dikkat!
+        results = detect_board_model(img_bgr)
         result = results[0]
 
         detections = []
@@ -67,13 +70,15 @@ def detect_from_url():
             xyxy = box.xyxy[0].tolist()
             x1, y1, x2, y2 = map(int, xyxy)
 
-            class_name = detect_board_model.names.get(cls_id, f"class_{cls_id}")
+            class_name = CUSTOM_NAMES.get(cls_id, f"class_{cls_id}")
             label = f"{class_name} {conf:.2f}"
 
             # 📦 Kutu ve etiket çizimi
-            cv2.rectangle(img_bgr, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            cv2.rectangle(img_bgr, (x1, y1), (x2, y2), (0, 255, 0), 3)  # Kutunun kalınlığı: 3
+
             cv2.putText(img_bgr, label, (x1, y1 - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+            cv2.FONT_HERSHEY_SIMPLEX, 1.8, (0, 255, 0), 4)  # Font boyutu: 0.8, kalınlık: 2
+
 
             detections.append({
                 "class_id": cls_id,

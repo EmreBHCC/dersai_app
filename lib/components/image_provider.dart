@@ -20,13 +20,13 @@ class MyImageProvider extends ChangeNotifier {
   String? _decoded_url = "";
   List<dynamic>? get detectionsList => _detections;
   String? get decoded_url => _decoded_url;
-
+  String apiUrl = "http://192.168.246.212:7000";
  
 Future<void> uploadImageFromUrl(String imageUrl) async {
   print("Gönderilen imageUrl: $imageUrl");
 
   try {
-    var url = Uri.parse('http://192.168.1.156:7000/detect-board');
+    var url = Uri.parse('$apiUrl/detect-board');
 
     final response = await http.post(
       url,
@@ -72,6 +72,7 @@ Future<void> uploadImageFromUrl(String imageUrl) async {
  
 
       print("Yüklenen resmin URL'si: $imageUrl");
+      notifyListeners();
       await uploadImageFromUrl(imageUrl);
       print("resim modele gönderildi");
     } catch (e) {
