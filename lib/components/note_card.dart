@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/note_provider.dart';
+import 'note_provider.dart';
 
 class NoteCard extends StatelessWidget {
   final String note;
@@ -9,12 +9,12 @@ class NoteCard extends StatelessWidget {
   final double screenHeight;
 
   const NoteCard({
-    Key? key,
+    super.key,
     required this.note,
     required this.baseColor,
     required this.screenWidth,
     required this.screenHeight,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

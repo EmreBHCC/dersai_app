@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/note_provider.dart';
+import 'components/note_provider.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final noteProvider = Provider.of<NoteProvider>(context, listen: false);
+    Provider.of<NoteProvider>(context, listen: false);
     return Scaffold(
       body: Container(
         width: double.infinity,

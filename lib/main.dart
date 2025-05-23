@@ -1,3 +1,4 @@
+import 'package:dersai_app/components/image_provider.dart';
 import 'package:dersai_app/home.dart';
 import 'package:flutter/material.dart';
 import 'splash_screen.dart';
@@ -5,7 +6,7 @@ import 'direct_tanima.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
-import 'providers/note_provider.dart';
+import 'components/note_provider.dart';
 import 'user_page.dart';
 
 void main() async {
@@ -13,7 +14,14 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   print("Firebase baslatildi");
   runApp(
-    ChangeNotifierProvider(create: (context) => NoteProvider(), child: MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NoteProvider()),
+        ChangeNotifierProvider(create: (_) => MyImageProvider()),
+      ],
+
+      child: MyApp(),
+    ),
   );
 }
 
@@ -34,9 +42,11 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/home': (context) => const HomePage(), // Ana sayfanın geleceği yer
-        '/direct_tanima': (context) => const DirectTanimaPage(),
+        '/direct_tanima': (context) => DirectTanimaPage(),
         '/user': (context) => const UserPage(),
       },
     );
   }
 }
+
+

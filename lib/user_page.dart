@@ -2,14 +2,14 @@ import 'package:dersai_app/components/custom_app_bar.dart';
 import 'package:dersai_app/components/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/note_provider.dart';
+import 'components/note_provider.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final noteProvider = Provider.of<NoteProvider>(context, listen: false);
+    Provider.of<NoteProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
     double screenWidth = size.width;
     double screenHeight = size.height;

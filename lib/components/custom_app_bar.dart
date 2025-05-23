@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/note_provider.dart';
+import 'note_provider.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String text;
@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final noteProvider = Provider.of<NoteProvider>(context, listen: false);
+    Provider.of<NoteProvider>(context, listen: false);
     return AppBar(
       backgroundColor: const Color(0xff02003C),
       automaticallyImplyLeading: false,

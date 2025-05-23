@@ -1,4 +1,3 @@
-import 'user_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'components/note_card.dart';
@@ -6,7 +5,7 @@ import 'components/add_note_button.dart';
 import 'components/bottom_navigation.dart';
 import 'components/custom_app_bar.dart';
 import 'components/color_picker.dart';
-import 'providers/note_provider.dart';
+import 'components/note_provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -111,7 +110,7 @@ class HomePage extends StatelessWidget {
     double titleFontSize = screenWidth * 0.06;
     int crossAxisCount = screenWidth > 600 ? 3 : 2;
 
-    final noteProvider = Provider.of<NoteProvider>(context, listen: false);
+    Provider.of<NoteProvider>(context, listen: false);
 
     return Scaffold(
       body: Stack(
@@ -122,7 +121,7 @@ class HomePage extends StatelessWidget {
                 text: "Ana Sayfa",
                 onMenuTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Menüye tıklandı")),
+                    const SnackBar(content: Text("Menüye tiklandi")),
                   );
                 },
                 onProfileTap: () {

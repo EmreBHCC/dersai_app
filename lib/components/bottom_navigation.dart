@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/note_provider.dart';
+import 'note_provider.dart';
 
 class BottomNavigation extends StatelessWidget {
   final double screenWidth;
@@ -14,7 +14,7 @@ class BottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final noteProvider = Provider.of<NoteProvider>(context, listen: false);
+    Provider.of<NoteProvider>(context, listen: false);
     return Container(
       height: screenHeight * 0.08,
       decoration: BoxDecoration(
