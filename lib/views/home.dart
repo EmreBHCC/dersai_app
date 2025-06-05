@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'components/note_card.dart';
-import 'components/add_note_button.dart';
-import 'components/bottom_navigation.dart';
-import 'components/custom_app_bar.dart';
-import 'components/color_picker.dart';
-import 'components/note_provider.dart';
+import '../widgets/note_card.dart';
+import '../widgets/add_note_button.dart';
+import '../widgets/bottom_navigation.dart';
+import '../widgets/custom_app_bar.dart';
+import '../widgets/color_picker.dart';
+import '../provider/note_provider.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   Future<void> _addNote(BuildContext context) async {
     Size size = MediaQuery.of(context).size;
@@ -119,11 +119,7 @@ class HomePage extends StatelessWidget {
             children: [
               CustomAppBar(
                 text: "Ana Sayfa",
-                onMenuTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Menüye tiklandi")),
-                  );
-                },
+                onMenuTap: () {},
                 onProfileTap: () {
                   Navigator.pushNamed(context, '/user');
                 },

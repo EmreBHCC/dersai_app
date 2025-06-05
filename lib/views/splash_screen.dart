@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'components/note_provider.dart';
+import '../provider/note_provider.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -14,9 +14,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // 3 saniye sonra ana sayfaya yönlendir
+    // 3 saniye sonra login ekranına yönlendir
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/login');
     });
   }
 

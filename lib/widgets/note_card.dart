@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'note_provider.dart';
+import '../provider/note_provider.dart';
 
 class NoteCard extends StatelessWidget {
   final String note;
@@ -25,10 +25,6 @@ class NoteCard extends StatelessWidget {
         top: screenHeight * 0.02,
         right: screenWidth * 0.02,
         left: screenWidth * 0.02,
-      ),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 65, 65, 65),
-        borderRadius: BorderRadius.circular(28),
       ),
       child: Container(
         margin: EdgeInsets.only(

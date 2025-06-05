@@ -1,8 +1,8 @@
-import 'package:dersai_app/components/custom_app_bar.dart';
-import 'package:dersai_app/components/bottom_navigation.dart';
+import 'package:dersai_app/widgets/custom_app_bar.dart';
+import 'package:dersai_app/widgets/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'components/note_provider.dart';
+import '../provider/note_provider.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({Key? key}) : super(key: key);

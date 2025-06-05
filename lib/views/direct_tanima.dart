@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:dersai_app/components/custom_app_bar.dart';
-import 'package:dersai_app/components/image_provider.dart';
+import 'package:dersai_app/widgets/custom_app_bar.dart';
+import 'package:dersai_app/provider/image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import 'components/note_provider.dart';
+import '../provider/note_provider.dart';
 
 class DirectTanimaPage extends StatefulWidget {
   const DirectTanimaPage({Key? key}) : super(key: key);
@@ -41,7 +41,10 @@ class _DirectTanimaPageState extends State<DirectTanimaPage> {
       print('user cancelled the image selection');
       return;
     } else {
-      final imageProvider = Provider.of<MyImageProvider>(context, listen: false);
+      final imageProvider = Provider.of<MyImageProvider>(
+        context,
+        listen: false,
+      );
       await imageProvider.uploadImage(File(pickedFile.path));
     }
   }
@@ -128,21 +131,23 @@ class _DirectTanimaPageState extends State<DirectTanimaPage> {
                   // Görsel için daha fazla alan ayır ve height parametresini kaldır
                   Expanded(
                     flex: 3,
-                    child: (imageProviderWatch.decoded_url != null &&
-                            imageProviderWatch.decoded_url!.isNotEmpty)
-                        ? Container(
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            child: Image.network(
-                              imageProviderWatch.decoded_url!,
-                              fit: BoxFit.contain,
+                    child:
+                        (imageProviderWatch.decodedUrl != null &&
+                                imageProviderWatch.decodedUrl!.isNotEmpty)
+                            ? Container(
                               width: double.infinity,
-                              // height: MediaQuery.of(context).size.height * 0.25, // kaldırıldı
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(Icons.broken_image, size: 48),
-                            ),
-                          )
-                        : SizedBox.shrink(),
+                              alignment: Alignment.center,
+                              child: Image.network(
+                                imageProviderWatch.decodedUrl!,
+                                fit: BoxFit.contain,
+                                width: double.infinity,
+                                // height: MediaQuery.of(context).size.height * 0.25, // kaldırıldı
+                                errorBuilder:
+                                    (context, error, stackTrace) =>
+                                        Icon(Icons.broken_image, size: 48),
+                              ),
+                            )
+                            : SizedBox.shrink(),
                   ),
                 ],
               ),

@@ -12,7 +12,7 @@ from ultralytics import YOLO
 app = Flask(__name__)
 CORS(app, resources={r"/detect-board": {"origins": "*"}})
 # kendine göre değiştirirsin
-model_path = 'C:/Users/kurt_/dersai_app/best.pt'
+model_path = 'best.pt'
 # 🔍 YOLO modelini yükle
 detect_board_model = YOLO(model_path)
 

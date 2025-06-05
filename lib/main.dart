@@ -1,18 +1,16 @@
-import 'package:dersai_app/components/image_provider.dart';
-import 'package:dersai_app/home.dart';
+import 'package:dersai_app/core/routes/app_routes.dart';
+import 'package:dersai_app/provider/image_provider.dart';
 import 'package:flutter/material.dart';
-import 'splash_screen.dart';
-import 'direct_tanima.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'core/constants/size_config.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
-import 'components/note_provider.dart';
-import 'user_page.dart';
+import 'provider/note_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  print("Firebase baslatildi");
+  debugPrint("Firebase baslatildi");
   runApp(
     MultiProvider(
       providers: [
@@ -30,6 +28,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return MaterialApp(
       title: 'DersAI',
       theme: ThemeData(
@@ -39,14 +38,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/home': (context) => const HomePage(), // Ana sayfanın geleceği yer
-        '/direct_tanima': (context) => DirectTanimaPage(),
-        '/user': (context) => const UserPage(),
-      },
+      routes: AppRoutes.routes,
     );
   }
 }
-
-

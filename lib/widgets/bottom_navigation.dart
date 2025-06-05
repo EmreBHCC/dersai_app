@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'note_provider.dart';
+import '../provider/note_provider.dart';
 
 class BottomNavigation extends StatelessWidget {
   final double screenWidth;
@@ -18,7 +18,7 @@ class BottomNavigation extends StatelessWidget {
     return Container(
       height: screenHeight * 0.08,
       decoration: BoxDecoration(
-        color: Color(0xff02003C),
+        color: Colors.indigo[100],
         boxShadow: [
           BoxShadow(color: Colors.black, blurRadius: 4, offset: Offset(0, -2)),
         ],
@@ -31,7 +31,7 @@ class BottomNavigation extends StatelessWidget {
           child: Text(
             'Doğrudan Tanıma',
             style: TextStyle(
-              color: Colors.white,
+              color: const Color.fromARGB(255, 0, 0, 0),
               fontSize: screenWidth * 0.045,
               fontWeight: FontWeight.bold,
             ),

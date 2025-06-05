@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'note_provider.dart';
+import '../provider/note_provider.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String text;
@@ -18,11 +18,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     Provider.of<NoteProvider>(context, listen: false);
     return AppBar(
-      backgroundColor: const Color(0xff02003C),
+      backgroundColor: Colors.indigo[100],
       automaticallyImplyLeading: false,
       title: Text(text, style: const TextStyle(fontSize: 25)),
       centerTitle: true,
-      leading: IconButton(onPressed: onMenuTap, icon: const Icon(Icons.menu)),
+      leading: IconButton(
+        onPressed: () => Navigator.of(context).pop(),
+        icon: const Icon(Icons.arrow_back),
+      ),
       actions: [
         IconButton(
           onPressed: onProfileTap,

@@ -66,5 +66,4 @@ class DefaultFirebaseOptions {
     projectId: 'dersai-app-fb995',
     storageBucket: 'dersai-app-fb995.firebasestorage.app',
   );
-
 }
