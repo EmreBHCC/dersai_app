@@ -6,97 +6,110 @@ import '../widgets/bottom_navigation.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/color_picker.dart';
 import '../provider/note_provider.dart';
+import '../models/note_model.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   Future<void> _addNote(BuildContext context) async {
     Size size = MediaQuery.of(context).size;
-    String input = "";
-    String? newNote = await showDialog<String>(
+    TextEditingController titleController = TextEditingController();
+    TextEditingController contentController = TextEditingController();
+    Color selectedColor = Colors.blue;
+
+    final colorNotifier = ValueNotifier<Color>(selectedColor);
+
+    bool isDuplicate(String title, List<NoteModel> notes) {
+      return notes.any((note) => note.title == title);
+    }
+
+    final newNote = await showDialog<NoteModel>(
       context: context,
       builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              insetPadding: EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 8.0,
-              ),
-              title: Text('Yeni Not Ekle'),
-              content: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.7,
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextField(
-                        autofocus: true,
-                        onChanged: (value) {
-                          setState(() {
-                            input = value;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Not başlığı girin',
-                        ),
-                      ),
-                      SizedBox(height: size.height * 0.02),
-                      ColorPicker(
+        return AlertDialog(
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 8.0,
+            vertical: 8.0,
+          ),
+          title: const Text('Yeni Not Ekle'),
+          content: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: size.height * 0.7),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: titleController,
+                    autofocus: true,
+                    decoration: const InputDecoration(
+                      hintText: 'Not başlığı girin',
+                    ),
+                  ),
+                  SizedBox(height: size.height * 0.02),
+                  TextField(
+                    controller: contentController,
+                    decoration: const InputDecoration(
+                      hintText: 'Not içeriği girin',
+                    ),
+                    maxLines: 3,
+                  ),
+                  SizedBox(height: size.height * 0.02),
+                  ValueListenableBuilder<Color>(
+                    valueListenable: colorNotifier,
+                    builder: (context, value, child) {
+                      return ColorPicker(
                         screenWidth: size.width,
                         screenHeight: size.height,
-                        note: input.isEmpty ? 'temp' : input,
-                      ),
-                    ],
+                        note: 'temp',
+                      );
+                    },
                   ),
-                ),
+                ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    context.read<NoteProvider>().clearTempColors();
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('İptal'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (input.isNotEmpty) {
-                      // Check if note with same name exists
-                      if (context.read<NoteProvider>().notes.contains(input)) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Bu isimde bir not zaten mevcut!'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                        return;
-                      }
-                      final tempColor = context
-                          .read<NoteProvider>()
-                          .getSelectedColor(input.isEmpty ? 'temp' : input);
-                      context.read<NoteProvider>().setSelectedColor(tempColor);
-                      Navigator.of(context).pop(input);
-                    }
-                  },
-                  child: Text('Ekle'),
-                ),
-              ],
-            );
-          },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.read<NoteProvider>().clearTempColors('temp');
+                Navigator.of(context).pop();
+              },
+              child: const Text('İptal'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final title = titleController.text.trim();
+                final content = contentController.text.trim();
+                final noteProvider = context.read<NoteProvider>();
+                if (title.isEmpty) return;
+                if (isDuplicate(title, noteProvider.notes)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Bu isimde bir not zaten mevcut!'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+                final color = noteProvider.getSelectedColor('temp');
+                final note = NoteModel(
+                  title: title,
+                  content: content,
+                  color: color.value,
+                );
+                Navigator.of(context).pop(note);
+              },
+              child: const Text('Ekle'),
+            ),
+          ],
         );
       },
     );
 
-    if (newNote != null && newNote.isNotEmpty) {
+    if (newNote != null) {
       final noteProvider = context.read<NoteProvider>();
-      final selectedColor = noteProvider.selectedColor;
-      noteProvider.addNote(newNote);
-      if (selectedColor != null) {
-        noteProvider.setTempColor(newNote, selectedColor);
-      }
+      await noteProvider.addNote(newNote);
+      noteProvider.clearTempColors('temp');
     }
   }
 
@@ -139,6 +152,9 @@ class HomePage extends StatelessWidget {
                       onTap: () => _addNote(context),
                       screenWidth: screenWidth,
                       screenHeight: screenHeight,
+                      titleController: TextEditingController(),
+                      contentController: TextEditingController(),
+                      selectedColor: ValueNotifier<Color>(Colors.blue),
                     ),
                   ],
                 ),
@@ -160,10 +176,8 @@ class HomePage extends StatelessWidget {
                       itemCount: noteProvider.notes.length,
                       itemBuilder: (context, index) {
                         final note = noteProvider.notes[index];
-                        final baseColor = noteProvider.noteColors[note]!;
                         return NoteCard(
                           note: note,
-                          baseColor: baseColor,
                           screenWidth: screenWidth,
                           screenHeight: screenHeight,
                         );

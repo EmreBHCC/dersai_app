@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+
+import '../models/note_model.dart';
 
 class NoteProvider with ChangeNotifier {
-  List<String> _notes = [];
+  List<NoteModel> _notes = [];
   Map<String, Color> _noteColors = {};
   Color? _selectedColor;
   Map<String, Color> _tempColors = {};
@@ -23,7 +26,7 @@ class NoteProvider with ChangeNotifier {
     Color.fromARGB(255, 255, 117, 138), // Açık kırmızı
   ];
 
-  List<String> get notes => _notes;
+  List<NoteModel> get notes => _notes;
   Map<String, Color> get noteColors => _noteColors;
   Color? get selectedColor => _selectedColor;
 
@@ -43,30 +46,31 @@ class NoteProvider with ChangeNotifier {
     return hslDark.toColor();
   }
 
-  Future<void> addNote(String note) async {
-    if (note.isNotEmpty) {
-      _notes.add(note);
-      _noteColors[note] = _selectedColor ?? defaultColor;
-      _selectedColor = null; // Seçili rengi sıfırla
-      notifyListeners();
-    }
-  }
-
-  void deleteNote(String note) {
-    _notes.remove(note);
-    _noteColors.remove(note);
+  Future<void> loadNotes() async {
+    final box = Hive.box<NoteModel>('notes');
+    _notes = box.values.toList();
     notifyListeners();
   }
 
-  void updateNote(String oldNote, String newNote) {
-    final index = _notes.indexOf(oldNote);
-    if (index != -1) {
-      _notes[index] = newNote;
-      final color = _noteColors[oldNote];
-      _noteColors.remove(oldNote);
-      _noteColors[newNote] = color!;
-      notifyListeners();
-    }
+  Future<void> addNote(NoteModel note) async {
+    final box = Hive.box<NoteModel>('notes');
+    await box.add(note);
+    _notes.add(note);
+    notifyListeners();
+  }
+
+  Future<void> deleteNote(int index) async {
+    final box = Hive.box<NoteModel>('notes');
+    await box.deleteAt(index);
+    _notes.removeAt(index);
+    notifyListeners();
+  }
+
+  Future<void> updateNote(int index, NoteModel newNote) async {
+    final box = Hive.box<NoteModel>('notes');
+    await box.putAt(index, newNote);
+    _notes[index] = newNote;
+    notifyListeners();
   }
 
   Color getSelectedColor(String note) {
@@ -82,7 +86,7 @@ class NoteProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearTempColors() {
+  void clearTempColors(String s) {
     _tempColors.clear();
     notifyListeners();
   }

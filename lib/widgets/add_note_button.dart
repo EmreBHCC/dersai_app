@@ -4,12 +4,18 @@ class AddNoteButton extends StatelessWidget {
   final VoidCallback onTap;
   final double screenWidth;
   final double screenHeight;
+  final TextEditingController titleController;
+  final TextEditingController contentController;
+  final ValueNotifier<Color> selectedColor;
 
   const AddNoteButton({
     Key? key,
     required this.onTap,
     required this.screenWidth,
     required this.screenHeight,
+    required this.titleController,
+    required this.contentController,
+    required this.selectedColor,
   }) : super(key: key);
 
   @override
@@ -32,7 +38,7 @@ class AddNoteButton extends StatelessWidget {
               "Yeni not ekle",
               style: TextStyle(fontSize: screenWidth * 0.035),
             ),
-            IconButton(onPressed: onTap, icon: Icon(Icons.add_circle_outline)),
+            Icon(Icons.add_circle_outline),
           ],
         ),
       ),
