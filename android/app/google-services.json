@@ -12,7 +12,12 @@
           "package_name": "com.example.dersai_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "879511121813-fbnl53djeo482c2h74p3doviu0q2hdal.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCxtw7FEqrx79S-NDpyCR2qIk7n_3Di9fI"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "879511121813-fbnl53djeo482c2h74p3doviu0q2hdal.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

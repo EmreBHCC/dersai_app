@@ -1,20 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../core/constants/size_config.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
+  Future<void> _signInWithGoogle(BuildContext context) async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return; // Kullanıcı iptal etti
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      Navigator.pushReplacementNamed(context, '/home');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Google ile giriş başarısız: \\${e.toString()}'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
     return Scaffold(
       appBar: AppBar(title: const Text('Giriş Yap')),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(SizeConfig.screenWidth * 0.06),
           child: Form(
             key: _formKey,
             child: Column(
@@ -36,7 +59,7 @@ class LoginScreen extends StatelessWidget {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: SizeConfig.screenHeight * 0.02),
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
@@ -54,7 +77,7 @@ class LoginScreen extends StatelessWidget {
                     return null;
                   },
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: SizeConfig.screenHeight * 0.03),
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
@@ -68,13 +91,22 @@ class LoginScreen extends StatelessWidget {
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Giriş başarısız: ${e.toString()}'),
+                            content: Text('Giriş başarısız: \\${e.toString()}'),
                           ),
                         );
                       }
                     }
                   },
                   child: const Text('Giriş Yap'),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  icon: Icon(Icons.login),
+                  label: Text('Google ile Giriş Yap'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                  ),
+                  onPressed: () => _signInWithGoogle(context),
                 ),
                 const SizedBox(height: 16),
                 GestureDetector(

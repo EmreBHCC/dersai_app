@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/note_provider.dart';
+import '../core/constants/size_config.dart';
 
 class DirectTanimaPage extends StatefulWidget {
   const DirectTanimaPage({Key? key}) : super(key: key);
@@ -59,16 +60,13 @@ class _DirectTanimaPageState extends State<DirectTanimaPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     Provider.of<NoteProvider>(context, listen: false);
     final imageProviderWatch = Provider.of<MyImageProvider>(context);
-    Size size = MediaQuery.of(context).size;
-    double screenWidth = size.width;
-    double screenHeight = size.height;
-
     // Responsive values
-    double appBarHeight = screenHeight * 0.12;
-    double padding = screenWidth * 0.06;
-    double spacing = screenHeight * 0.02;
+    double appBarHeight = SizeConfig.screenHeight * 0.12;
+    double padding = SizeConfig.screenWidth * 0.06;
+    double spacing = SizeConfig.screenHeight * 0.02;
 
     return Scaffold(
       body: Column(
@@ -122,7 +120,7 @@ class _DirectTanimaPageState extends State<DirectTanimaPage> {
                   Expanded(
                     child: _TanimaButton(
                       icon: Icons.help_outline,
-                      label: 'Bize Ulaşin',
+                      label: 'Bize Ulaşın',
                       onTap: () {},
                       wide: true,
                     ),
@@ -175,15 +173,10 @@ class _TanimaButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Provider.of<NoteProvider>(context, listen: false);
-    Size size = MediaQuery.of(context).size;
-    double screenWidth = size.width;
-    double screenHeight = size.height;
-
     // Responsive values
-    double iconSize = screenWidth * 0.08;
-    double fontSize = screenWidth * 0.04;
-    double borderRadius = screenWidth * 0.04;
-
+    double iconSize = SizeConfig.screenWidth * 0.08;
+    double fontSize = SizeConfig.screenWidth * 0.04;
+    double borderRadius = SizeConfig.screenWidth * 0.04;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(borderRadius),
@@ -198,7 +191,7 @@ class _TanimaButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: iconSize, color: Colors.black87),
-            SizedBox(height: screenHeight * 0.01),
+            SizedBox(height: SizeConfig.screenHeight * 0.01),
             Text(
               label,
               style: TextStyle(fontSize: fontSize, color: Colors.black87),

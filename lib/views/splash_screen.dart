@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/note_provider.dart';
 import 'dart:async';
+import '../core/constants/size_config.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     Provider.of<NoteProvider>(context, listen: false);
     return Scaffold(
       body: Container(
@@ -38,9 +40,9 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/logo.png', // dersai logosu buraya yerleştirilmeli
-              width: 200,
-              height: 200,
+              'assets/logo.png',
+              width: SizeConfig.screenWidth * 0.5,
+              height: SizeConfig.screenWidth * 0.5,
             ),
           ],
         ),

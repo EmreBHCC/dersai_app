@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/note_card.dart';
 import '../widgets/add_note_button.dart';
-import '../widgets/bottom_navigation.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/color_picker.dart';
 import '../provider/note_provider.dart';
 import '../models/note_model.dart';
+import '../core/constants/size_config.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -57,11 +57,7 @@ class HomePage extends StatelessWidget {
                   ValueListenableBuilder<Color>(
                     valueListenable: colorNotifier,
                     builder: (context, value, child) {
-                      return ColorPicker(
-                        screenWidth: size.width,
-                        screenHeight: size.height,
-                        note: 'temp',
-                      );
+                      return ColorPicker(note: 'temp');
                     },
                   ),
                 ],
@@ -115,13 +111,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    double screenWidth = size.width;
-    double screenHeight = size.height;
-
-    // Responsive values
-    double titleFontSize = screenWidth * 0.06;
-    int crossAxisCount = screenWidth > 600 ? 3 : 2;
+    SizeConfig.init(context);
+    double titleFontSize = SizeConfig.screenWidth * 0.06;
+    int crossAxisCount = SizeConfig.screenWidth > 600 ? 3 : 2;
 
     Provider.of<NoteProvider>(context, listen: false);
 
@@ -132,14 +124,18 @@ class HomePage extends StatelessWidget {
             children: [
               CustomAppBar(
                 text: "Ana Sayfa",
+                showLogout: true,
+                onLogout: () {
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
                 onMenuTap: () {},
                 onProfileTap: () {
                   Navigator.pushNamed(context, '/user');
                 },
               ),
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: SizeConfig.screenHeight * 0.02),
               SizedBox(
-                height: screenHeight * 0.1,
+                height: SizeConfig.screenHeight * 0.1,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -147,11 +143,9 @@ class HomePage extends StatelessWidget {
                       "Notlariniz",
                       style: TextStyle(fontSize: titleFontSize),
                     ),
-                    SizedBox(width: screenWidth * 0.02),
+                    SizedBox(width: SizeConfig.screenWidth * 0.02),
                     AddNoteButton(
                       onTap: () => _addNote(context),
-                      screenWidth: screenWidth,
-                      screenHeight: screenHeight,
                       titleController: TextEditingController(),
                       contentController: TextEditingController(),
                       selectedColor: ValueNotifier<Color>(Colors.blue),
@@ -159,43 +153,63 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 12),
               Expanded(
                 child: Consumer<NoteProvider>(
                   builder: (context, noteProvider, child) {
                     return GridView.builder(
                       padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.04,
-                        vertical: screenHeight * 0.02,
+                        horizontal: SizeConfig.screenWidth * 0.04,
+                        vertical: SizeConfig.screenHeight * 0.02,
                       ),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: screenWidth * 0.04,
-                        mainAxisSpacing: screenHeight * 0.02,
+                        crossAxisSpacing: SizeConfig.screenWidth * 0.04,
+                        mainAxisSpacing: SizeConfig.screenHeight * 0.02,
                         childAspectRatio: 0.7,
                       ),
                       itemCount: noteProvider.notes.length,
                       itemBuilder: (context, index) {
                         final note = noteProvider.notes[index];
-                        return NoteCard(
-                          note: note,
-                          screenWidth: screenWidth,
-                          screenHeight: screenHeight,
-                        );
+                        return NoteCard(note: note);
                       },
                     );
                   },
                 ),
               ),
-              SizedBox(height: screenWidth * 0.18),
+              SizedBox(height: SizeConfig.screenHeight * 0.02),
             ],
           ),
           Positioned(
-            left: 10,
-            right: 10,
-            bottom: 20,
-            child: BottomNavigation(
-              screenWidth: screenWidth,
-              screenHeight: screenHeight,
+            left: 0,
+            right: 0,
+            bottom: SizeConfig.screenHeight * 0.02,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/direct_tanima');
+                },
+                icon: const Icon(Icons.camera_alt),
+                label: const Text('Direct Tanıma'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.indigo,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size.fromHeight(48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 6,
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

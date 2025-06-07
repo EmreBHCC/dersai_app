@@ -1,18 +1,16 @@
 import 'package:dersai_app/widgets/custom_app_bar.dart';
-import 'package:dersai_app/widgets/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/note_provider.dart';
+import '../core/constants/size_config.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     Provider.of<NoteProvider>(context, listen: false);
-    Size size = MediaQuery.of(context).size;
-    double screenWidth = size.width;
-    double screenHeight = size.height;
 
     return Scaffold(
       body: Stack(
@@ -21,8 +19,8 @@ class UserPage extends StatelessWidget {
             children: [
               CustomAppBar(text: "Profiliniz"),
               Container(
-                width: screenWidth,
-                height: screenHeight * .3,
+                width: SizeConfig.screenWidth,
+                height: SizeConfig.screenHeight * .3,
                 decoration: BoxDecoration(
                   color: Colors.grey,
                   borderRadius: BorderRadius.only(
@@ -35,39 +33,30 @@ class UserPage extends StatelessWidget {
                     onPressed: () {},
                     icon: Icon(
                       Icons.account_circle_outlined,
-                      size: screenWidth * .5,
+                      size: SizeConfig.screenWidth * .5,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.01),
+              SizedBox(height: SizeConfig.screenHeight * 0.01),
               Text(
                 "emre bahceci",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: screenWidth * .1,
+                  fontSize: SizeConfig.screenWidth * .1,
                 ),
               ),
               Divider(
-                height: screenHeight * 0.01,
+                height: SizeConfig.screenHeight * 0.01,
                 color: Colors.black,
                 thickness: 3,
               ),
-              SizedBox(height: screenHeight * 0.01),
+              SizedBox(height: SizeConfig.screenHeight * 0.01),
               Text(
                 "eposta@bbclub.space",
-                style: TextStyle(fontSize: screenWidth * .05),
+                style: TextStyle(fontSize: SizeConfig.screenWidth * .05),
               ),
             ],
-          ),
-          Positioned(
-            left: 10,
-            right: 10,
-            bottom: 20,
-            child: BottomNavigation(
-              screenWidth: screenWidth,
-              screenHeight: screenHeight,
-            ),
           ),
         ],
       ),

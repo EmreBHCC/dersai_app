@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/note_provider.dart';
+import '../core/constants/size_config.dart';
 
 class ColorPicker extends StatelessWidget {
-  final double screenWidth;
-  final double screenHeight;
   final String note;
 
-  const ColorPicker({
-    Key? key,
-    required this.screenWidth,
-    required this.screenHeight,
-    required this.note,
-  }) : super(key: key);
+  const ColorPicker({Key? key, required this.note}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +18,14 @@ class ColorPicker extends StatelessWidget {
             Text(
               'Renk Seçin',
               style: TextStyle(
-                fontSize: screenWidth * 0.04,
+                fontSize: SizeConfig.screenWidth * 0.04,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: screenHeight * 0.02),
+            SizedBox(height: SizeConfig.screenHeight * 0.02),
             Wrap(
-              spacing: screenWidth * 0.02,
-              runSpacing: screenHeight * 0.02,
+              spacing: SizeConfig.screenWidth * 0.02,
+              runSpacing: SizeConfig.screenHeight * 0.02,
               alignment: WrapAlignment.center,
               children:
                   noteProvider.availableColors.map((color) {
@@ -67,4 +61,3 @@ class ColorPicker extends StatelessWidget {
     );
   }
 }
-

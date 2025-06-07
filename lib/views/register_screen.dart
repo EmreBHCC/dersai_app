@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../core/constants/size_config.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -14,7 +16,7 @@ class RegisterScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Kayıt Ol')),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(SizeConfig.screenWidth * 0.06),
           child: Form(
             key: _formKey,
             child: Column(
@@ -36,7 +38,7 @@ class RegisterScreen extends StatelessWidget {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: SizeConfig.screenHeight * 0.02),
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
@@ -54,7 +56,7 @@ class RegisterScreen extends StatelessWidget {
                     return null;
                   },
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: SizeConfig.screenHeight * 0.03),
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
@@ -88,4 +90,3 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 }
-

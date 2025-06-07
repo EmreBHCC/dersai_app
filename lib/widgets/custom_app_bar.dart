@@ -6,12 +6,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String text;
   final VoidCallback? onMenuTap;
   final VoidCallback? onProfileTap;
+  final bool showLogout;
+  final VoidCallback? onLogout;
 
   const CustomAppBar({
     super.key,
     required this.text,
     this.onMenuTap,
     this.onProfileTap,
+    this.showLogout = false,
+    this.onLogout,
   });
 
   @override
@@ -23,8 +27,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(text, style: const TextStyle(fontSize: 25)),
       centerTitle: true,
       leading: IconButton(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: const Icon(Icons.arrow_back),
+        onPressed:
+            showLogout
+                ? (onLogout ??
+                    () => Navigator.pushReplacementNamed(context, '/login'))
+                : () => Navigator.of(context).pop(),
+        icon: Icon(showLogout ? Icons.logout : Icons.arrow_back),
+        tooltip: showLogout ? 'Çıkış Yap' : 'Geri',
       ),
       actions: [
         IconButton(

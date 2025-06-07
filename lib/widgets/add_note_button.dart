@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import '../core/constants/size_config.dart';
 
 class AddNoteButton extends StatelessWidget {
   final VoidCallback onTap;
-  final double screenWidth;
-  final double screenHeight;
   final TextEditingController titleController;
   final TextEditingController contentController;
   final ValueNotifier<Color> selectedColor;
@@ -11,8 +10,6 @@ class AddNoteButton extends StatelessWidget {
   const AddNoteButton({
     Key? key,
     required this.onTap,
-    required this.screenWidth,
-    required this.screenHeight,
     required this.titleController,
     required this.contentController,
     required this.selectedColor,
@@ -21,8 +18,8 @@ class AddNoteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: screenWidth * 0.4,
-      height: screenHeight * 0.05,
+      width: SizeConfig.screenWidth * 0.4,
+      height: SizeConfig.screenHeight * 0.05,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(5),
@@ -36,7 +33,7 @@ class AddNoteButton extends StatelessWidget {
           children: [
             Text(
               "Yeni not ekle",
-              style: TextStyle(fontSize: screenWidth * 0.035),
+              style: TextStyle(fontSize: SizeConfig.screenWidth * 0.035),
             ),
             Icon(Icons.add_circle_outline),
           ],
