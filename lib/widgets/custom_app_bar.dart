@@ -22,10 +22,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     Provider.of<NoteProvider>(context, listen: false);
     return AppBar(
-      backgroundColor: Colors.indigo[100],
+      backgroundColor: Colors.indigo,
       automaticallyImplyLeading: false,
-      title: Text(text, style: const TextStyle(fontSize: 25)),
       centerTitle: true,
+      iconTheme: const IconThemeData(color: Colors.white), // Iconlar beyaz
+      titleTextStyle: const TextStyle(color: Colors.white, fontSize: 25),
+      title: Text(text),
       leading: IconButton(
         onPressed:
             showLogout

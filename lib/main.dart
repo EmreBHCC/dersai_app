@@ -9,6 +9,8 @@ import 'core/constants/size_config.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'provider/note_provider.dart';
+import 'package:dersai_app/services/notification_service.dart';
+import 'views/reminders_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +22,7 @@ void main() async {
   await Hive.openBox<NoteModel>('notes');
   final noteProvider = NoteProvider();
   await noteProvider.loadNotes();
+  await NotificationService.init(); // Bildirim servisini başlat
   runApp(
     MultiProvider(
       providers: [
@@ -40,13 +43,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DersAI',
       theme: ThemeData(
-        brightness: Brightness.light, // Aydınlık tema
+        brightness: Brightness.light,
         primarySwatch: Colors.indigo,
         scaffoldBackgroundColor: Colors.white,
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
-      routes: AppRoutes.routes,
+      routes: {
+        ...AppRoutes.routes,
+        '/reminders': (context) => const RemindersPage(),
+      },
     );
   }
 }

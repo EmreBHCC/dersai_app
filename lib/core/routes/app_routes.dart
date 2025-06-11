@@ -17,7 +17,7 @@ class RouteNames {
 class AppRoutes {
   static final routes = {
     RouteNames.splash: (context) => const SplashScreen(),
-    RouteNames.login: (context) => const LoginScreen(),
+    RouteNames.login: (context) => const HomePage(),
     RouteNames.home: (context) => const HomePage(),
     RouteNames.directTanima: (context) => DirectTanimaPage(),
     RouteNames.user: (context) => const UserPage(),

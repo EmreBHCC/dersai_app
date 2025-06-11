@@ -13,5 +13,13 @@ class NoteModel {
   @HiveField(2)
   final int color;
 
-  NoteModel({required this.title, required this.content, required this.color});
+  @HiveField(3)
+  final DateTime? reminderTime; // Bildirim/Alarm zamanı
+
+  NoteModel({
+    required this.title,
+    required this.content,
+    required this.color,
+    this.reminderTime,
+  });
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../core/constants/size_config.dart';
+import '../widgets/custom_app_bar.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -13,7 +14,12 @@ class RegisterScreen extends StatelessWidget {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Kayıt Ol')),
+      appBar: CustomAppBar(
+        text: 'Kayıt Ol',
+        onProfileTap: null,
+        showLogout: false,
+        onLogout: null,
+      ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(SizeConfig.screenWidth * 0.06),

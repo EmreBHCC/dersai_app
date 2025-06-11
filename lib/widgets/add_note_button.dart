@@ -3,17 +3,8 @@ import '../core/constants/size_config.dart';
 
 class AddNoteButton extends StatelessWidget {
   final VoidCallback onTap;
-  final TextEditingController titleController;
-  final TextEditingController contentController;
-  final ValueNotifier<Color> selectedColor;
 
-  const AddNoteButton({
-    Key? key,
-    required this.onTap,
-    required this.titleController,
-    required this.contentController,
-    required this.selectedColor,
-  }) : super(key: key);
+  const AddNoteButton({Key? key, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,0 +1,83 @@
+etiketleme ve ayni etiketleri klasor olarka gosterme
+ocr
+Hatırlatıcılar ve Görev Listeleri
+Sesli Not
+Transkripsiyon
+Not Özetleme
+
+1. Etiketleme ve Etiketleri Klasör Gibi Gösterme
+Veri Yapısı: Hive (yerel) veya Firebase Firestore (bulut) kullanabilirsin.
+
+Öneri: Not nesnesinde List<String> tags alanı tanımla.
+
+Görsel Uygulama: Chips, Wrap, veya ExpansionTile ile her etiketi kategori klasörü gibi gösterebilirsin.
+
+📷 2. OCR (Yazı Tanıma)
+Tesseract OCR (Flutter'da google_mlkit_text_recognition paketi)
+
+✅ Offline çalışır
+
+✅ Hızlı ve yeterince doğru
+
+Google ML Kit (Cloud Vision)
+
+✅ Daha iyi doğruluk
+
+❗ İnternet gerekir
+
+Öneri: google_mlkit_text_recognition paketiyle başla; ileri seviyede sunucu tarafında daha güçlü bir model de ekleyebilirsin (örn. Flask + PaddleOCR).
+
+⏰ 3. Hatırlatıcılar ve Görev Listeleri
+Flutter Local Notifications
+
+Zamanlanmış bildirimler için idealdir.
+
+Veri yapısı için: Hive'da her görev için DateTime alanı tut, hatırlatma zamanını karşılaştır.
+
+Paketler:
+
+flutter_local_notifications
+
+android_alarm_manager_plus (arka planda çalıştırmak istersen)
+
+🎙️ 4. Sesli Not (Kayıt)
+Paketler:
+
+flutter_sound
+
+audio_recorder_2
+
+Saklama: Firebase Storage'a mp3/m4a yükle.
+
+Alternatif: Cihaz belleğinde saklayıp Hive ile yolu yönetebilirsin.
+
+✍️ 5. Transkripsiyon (Ses → Metin)
+Google Speech-to-Text API (Cloud)
+
+✅ Yüksek doğruluk
+
+❗ İnternet gerekir
+
+Alternatif (Offline ve Open Source):
+
+Whisper (OpenAI) → Flask API ile ses dosyasını al, metne çevirip geri gönder.
+
+Kullanıcı ses kaydını gönderir, Flask-Whisper sunucuya işler.
+
+🧠 6. Not Özetleme (AI Destekli)
+GPT tabanlı özetleme:
+
+OpenAI API veya Claude AI, GPT-4o kullanarak özetleme yapılabilir.
+
+Flutter'dan istek: Notu Flask API'ye gönder → OpenAI API kullan → özet döndür.
+
+Alternatif Model: pegasus, bart, t5 gibi HuggingFace özetleyiciler Flask ile kullanılabilir.
+
+📦 Entegre Teknoloji Önerisi (Toplu)
+İhtiyaç	Teknoloji/Servis Önerisi
+Etiketleme	Hive veya Firestore, UI için Chips, Wrap
+OCR	google_mlkit_text_recognition, alternatif: PaddleOCR
+Hatırlatıcılar	flutter_local_notifications, WorkManager
+Sesli Not	flutter_sound, Firebase Storage
+Transkripsiyon	Flask + Whisper API veya Google Speech-to-Text
+Özetleme	Flask + GPT-4 / Claude veya HuggingFace modeli

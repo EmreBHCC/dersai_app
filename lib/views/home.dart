@@ -118,42 +118,49 @@ class HomePage extends StatelessWidget {
     Provider.of<NoteProvider>(context, listen: false);
 
     return Scaffold(
+      appBar: CustomAppBar(
+        text: 'DersAI',
+        onProfileTap: () {
+          Navigator.pushNamed(context, '/user');
+        },
+      ),
       body: Stack(
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomAppBar(
-                text: "Ana Sayfa",
-                showLogout: true,
-                onLogout: () {
-                  Navigator.pushReplacementNamed(context, '/login');
-                },
-                onMenuTap: () {},
-                onProfileTap: () {
-                  Navigator.pushNamed(context, '/user');
-                },
-              ),
-              SizedBox(height: SizeConfig.screenHeight * 0.02),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      "Notlariniz",
-                      style: TextStyle(fontSize: titleFontSize),
-                    ),
-                    SizedBox(width: SizeConfig.screenWidth * 0.02),
-                    AddNoteButton(
-                      onTap: () => _addNote(context),
-                      titleController: TextEditingController(),
-                      contentController: TextEditingController(),
-                      selectedColor: ValueNotifier<Color>(Colors.blue),
-                    ),
-                  ],
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  top: 10,
+                  bottom: 0,
+                  right: 16,
                 ),
-              ),
-              const SizedBox(height: 12),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.screenWidth * 0.04,
+                    vertical: SizeConfig.screenHeight * 0.02,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.indigo.shade100,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Notlarınız',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: titleFontSize,
+                          color: Colors.indigo.shade700,
+                        ),
+                      ),
+                      AddNoteButton(onTap: () => _addNote(context)),
+                    ],
+                  ),
+                ),
+              ), // Üstteki buton için boşluk bırak
               Expanded(
                 child: Consumer<NoteProvider>(
                   builder: (context, noteProvider, child) {
@@ -177,38 +184,72 @@ class HomePage extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: SizeConfig.screenHeight * 0.02),
             ],
           ),
           Positioned(
             left: 0,
             right: 0,
-            bottom: SizeConfig.screenHeight * 0.02,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/direct_tanima');
-                },
-                icon: const Icon(Icons.camera_alt),
-                label: const Text('Direct Tanıma'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size.fromHeight(48),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            bottom: 24,
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/direct_tanima');
+                    },
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text(
+                      'Direct Tanıma',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(160, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      elevation: 6,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                    ),
                   ),
-                  elevation: 6,
-                  textStyle: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  SizedBox(width: SizeConfig.screenWidth * 0.09),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/reminders');
+                    },
+                    icon: const Icon(Icons.alarm),
+                    label: const Text(
+                      'Alarmlar',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(160, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      elevation: 6,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                ),
+                ],
               ),
             ),
           ),

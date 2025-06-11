@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../core/constants/size_config.dart';
+import '../widgets/custom_app_bar.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -34,7 +35,12 @@ class LoginScreen extends StatelessWidget {
     final TextEditingController passwordController = TextEditingController();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Giriş Yap')),
+      appBar: CustomAppBar(
+        text: 'Giriş Yap',
+        onProfileTap: null,
+        showLogout: false,
+        onLogout: null,
+      ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(SizeConfig.screenWidth * 0.06),
