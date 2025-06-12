@@ -9,6 +9,13 @@ class RemindersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final notes = Provider.of<NoteProvider>(context).notes;
+    debugPrint(
+      'RemindersPage notes: ' +
+          notes
+              .map((e) => '${e.title} - ${e.reminderTime}')
+              .toList()
+              .toString(),
+    );
     final reminders =
         notes
             .where(
@@ -20,7 +27,7 @@ class RemindersPage extends StatelessWidget {
     reminders.sort((a, b) => a.reminderTime!.compareTo(b.reminderTime!));
     return Scaffold(
       appBar: CustomAppBar(
-        text: 'Kurulu Alarmlar & Zamanlayıcılar',
+        text: 'Kurulu Alarmlar',
         onProfileTap: null,
         showLogout: false,
         onLogout: null,
@@ -29,7 +36,7 @@ class RemindersPage extends StatelessWidget {
           reminders.isEmpty
               ? Center(
                 child: Text(
-                  'Hiç kurulu alarm veya zamanlayıcı yok.',
+                  'Hiç kurulu alarm yok.',
                   style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                 ),
               )

@@ -14,7 +14,8 @@ class HomePage extends StatelessWidget {
   Future<void> _addNote(BuildContext context) async {
     Size size = MediaQuery.of(context).size;
     TextEditingController titleController = TextEditingController();
-    TextEditingController contentController = TextEditingController();
+    TextEditingController tagController = TextEditingController();
+    List<String> tags = [];
     Color selectedColor = Colors.blue;
 
     final colorNotifier = ValueNotifier<Color>(selectedColor);
@@ -32,37 +33,113 @@ class HomePage extends StatelessWidget {
             vertical: 8.0,
           ),
           title: const Text('Yeni Not Ekle'),
-          content: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: size.height * 0.7),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: titleController,
-                    autofocus: true,
-                    decoration: const InputDecoration(
-                      hintText: 'Not başlığı girin',
-                    ),
+          content: StatefulBuilder(
+            builder: (context, setState) {
+              return ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: size.height * 0.7),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: titleController,
+                        autofocus: true,
+                        decoration: const InputDecoration(
+                          hintText: 'Not başlığı girin',
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      // Tag input
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: tagController,
+                              decoration: const InputDecoration(
+                                hintText: 'Etiket ekle',
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () {
+                              final tag = tagController.text.trim();
+                              if (tag.isNotEmpty && !tags.contains(tag)) {
+                                setState(() {
+                                  tags.add(tag);
+                                  tagController.clear();
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      if (tags.isNotEmpty)
+                        SizedBox(
+                          height: 36,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children:
+                                  tags
+                                      .map(
+                                        (tag) => Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 6,
+                                          ),
+                                          child: Chip(
+                                            label: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  '#',
+                                                  style: TextStyle(
+                                                    color: Colors.white70,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 2),
+                                                Text(
+                                                  tag,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            backgroundColor: Colors
+                                                .indigo
+                                                .shade400
+                                                .withOpacity(0.85),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            onDeleted: () {
+                                              setState(() {
+                                                tags.remove(tag);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                            ),
+                          ),
+                        ),
+                      SizedBox(height: size.height * 0.02),
+                      ValueListenableBuilder<Color>(
+                        valueListenable: colorNotifier,
+                        builder: (context, value, child) {
+                          return ColorPicker(note: 'temp');
+                        },
+                      ),
+                    ],
                   ),
-                  SizedBox(height: size.height * 0.02),
-                  TextField(
-                    controller: contentController,
-                    decoration: const InputDecoration(
-                      hintText: 'Not içeriği girin',
-                    ),
-                    maxLines: 3,
-                  ),
-                  SizedBox(height: size.height * 0.02),
-                  ValueListenableBuilder<Color>(
-                    valueListenable: colorNotifier,
-                    builder: (context, value, child) {
-                      return ColorPicker(note: 'temp');
-                    },
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
           actions: [
             TextButton(
@@ -75,7 +152,6 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 final title = titleController.text.trim();
-                final content = contentController.text.trim();
                 final noteProvider = context.read<NoteProvider>();
                 if (title.isEmpty) return;
                 if (isDuplicate(title, noteProvider.notes)) {
@@ -90,8 +166,9 @@ class HomePage extends StatelessWidget {
                 final color = noteProvider.getSelectedColor('temp');
                 final note = NoteModel(
                   title: title,
-                  content: content,
+                  content: '', // Content is empty at creation
                   color: color.value,
+                  tags: List<String>.from(tags),
                 );
                 Navigator.of(context).pop(note);
               },
@@ -190,62 +267,99 @@ class HomePage extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 24,
-            child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: SizeConfig.screenWidth * 0.04,
+              ),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/direct_tanima');
-                    },
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text(
-                      'Direct Tanıma',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.white,
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        // TODO: Etiketler sayfasına yönlendirme
+                      },
+                      icon: const Icon(Icons.label),
+                      label: const Text(
+                        'Etiketler',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(160, 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      elevation: 6,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.indigo,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(0, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 6,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 0,
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ),
-                  SizedBox(width: SizeConfig.screenWidth * 0.09),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/reminders');
-                    },
-                    icon: const Icon(Icons.alarm),
-                    label: const Text(
-                      'Alarmlar',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.white,
+                  SizedBox(width: SizeConfig.screenWidth * 0.03),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/direct_tanima');
+                      },
+                      icon: const Icon(Icons.camera_alt),
+                      label: const Text(
+                        'Tanıma',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.indigo,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(0, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 6,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 0,
+                          vertical: 12,
+                        ),
                       ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(160, 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                  ),
+                  SizedBox(width: SizeConfig.screenWidth * 0.03),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/reminders');
+                      },
+                      icon: const Icon(Icons.alarm),
+                      label: const Text(
+                        'Alarmlar',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
                       ),
-                      elevation: 6,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.indigo,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(0, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 6,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 0,
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ),

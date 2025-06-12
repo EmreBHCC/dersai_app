@@ -80,23 +80,22 @@ class NoteCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                        if (note.content.isNotEmpty)
+                        if (note.tags.isNotEmpty)
                           Padding(
                             padding: EdgeInsets.only(
-                              top: SizeConfig.screenWidth * 0.02,
+                              top: SizeConfig.screenWidth * 0.01,
                             ),
                             child: Text(
-                              note.content,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: SizeConfig.screenWidth * 0.035,
+                              note.tags.map((tag) => '#$tag').join(' '),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
                               ),
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        // Alarm button kaldırıldı (home screen'de görünmeyecek)
+                        // note.content artık gösterilmiyor
                       ],
                     ),
                   ),

@@ -16,10 +16,14 @@ class NoteModel {
   @HiveField(3)
   final DateTime? reminderTime; // Bildirim/Alarm zamanı
 
+  @HiveField(4)
+  final List<String> tags;
+
   NoteModel({
     required this.title,
     required this.content,
     required this.color,
     this.reminderTime,
+    this.tags = const [],
   });
 }

@@ -59,17 +59,17 @@ class NoteProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteNote(int index) async {
-    final box = Hive.box<NoteModel>('notes');
-    await box.deleteAt(index);
-    _notes.removeAt(index);
-    notifyListeners();
-  }
-
   Future<void> updateNote(int index, NoteModel newNote) async {
     final box = Hive.box<NoteModel>('notes');
     await box.putAt(index, newNote);
     _notes[index] = newNote;
+    debugPrint(
+      'updateNote: ' +
+          _notes
+              .map((e) => '${e.title} - ${e.reminderTime} - ${e.tags}')
+              .toList()
+              .toString(),
+    );
     notifyListeners();
   }
 

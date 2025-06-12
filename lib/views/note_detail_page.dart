@@ -9,6 +9,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/audio_player_widget.dart';
 
 class NoteDetailPage extends StatefulWidget {
   final int noteIndex;
@@ -25,7 +26,6 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
   final AudioRecorder _recorder = AudioRecorder();
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isRecording = false;
-  bool _isPlaying = false;
   List<FileSystemEntity> _audioFiles = [];
 
   @override
@@ -71,8 +71,10 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
       bool hasPermission = await _recorder.hasPermission();
       if (hasPermission) {
         final noteDir = await _getNoteAudioDir();
-        final fileName =
-            'recording_${DateTime.now().millisecondsSinceEpoch}.m4a';
+        final now = DateTime.now();
+        final safeName =
+            '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}_${now.hour.toString().padLeft(2, '0')}-${now.minute.toString().padLeft(2, '0')}-${now.second.toString().padLeft(2, '0')}';
+        final fileName = '$safeName.m4a';
         final filePath = '${noteDir.path}/$fileName';
         await _recorder.start(
           RecordConfig(encoder: AudioEncoder.aacLc, bitRate: 128000),
@@ -89,28 +91,6 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
     }
   }
 
-  Future<void> _playOrStopAudio(String path) async {
-    if (_isPlaying) {
-      await _audioPlayer.stop();
-      setState(() {
-        _isPlaying = false;
-      });
-    } else {
-      await _audioPlayer.setFilePath(path);
-      await _audioPlayer.play();
-      setState(() {
-        _isPlaying = true;
-      });
-      _audioPlayer.playerStateStream.listen((state) {
-        if (state.processingState == ProcessingState.completed) {
-          setState(() {
-            _isPlaying = false;
-          });
-        }
-      });
-    }
-  }
-
   void _showCurrentReminderDialog(DateTime reminderTime) {
     showDialog(
       context: context,
@@ -120,7 +100,7 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
               children: [
                 Icon(Icons.alarm, color: Colors.amber.shade800),
                 SizedBox(width: 8),
-                Text('Kurulu Alarm/Zamanlayıcı'),
+                Text('Kurulu Alarm'),
               ],
             ),
             content: Column(
@@ -186,9 +166,60 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
       ),
       body: Column(
         children: [
+          if (widget.note.tags.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.only(
+                left: SizeConfig.screenWidth * 0.06,
+                right: SizeConfig.screenWidth * 0.06,
+                top: SizeConfig.screenHeight * 0.02,
+              ),
+              child: SizedBox(
+                height: 36,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children:
+                        widget.note.tags
+                            .map(
+                              (tag) => Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: Chip(
+                                  label: Text(
+                                    '#$tag',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.indigo.shade400
+                                      .withOpacity(0.85),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                  ),
+                ),
+              ),
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              // Özetle butonu en sola
+              TextButton.icon(
+                onPressed: () {
+                  // TODO: Özetle fonksiyonu burada çağrılacak
+                },
+                icon: Icon(Icons.summarize, color: Colors.indigo),
+                label: Text('Özetle', style: TextStyle(color: Colors.indigo)),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.indigo,
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                ),
+              ),
+              Spacer(),
               IconButton(
                 icon: Icon(_isRecording ? Icons.stop : Icons.mic),
                 tooltip: _isRecording ? 'Kaydı Durdur' : 'Ses Kaydet',
@@ -263,8 +294,12 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                           widget.noteIndex,
                           updatedNote,
                         );
-                        setState(() {});
-                        _showCurrentReminderDialog(scheduledDate);
+                        await Future.delayed(Duration(milliseconds: 100));
+                        if (!mounted) return;
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/reminders',
+                          (route) => route.isFirst,
+                        );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Alarm kuruldu.')),
                         );
@@ -332,6 +367,26 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                   }
                 },
               ),
+              IconButton(
+                icon: Icon(Icons.save),
+                tooltip: 'Notu Kaydet',
+                onPressed: () async {
+                  final noteProvider = Provider.of<NoteProvider>(
+                    context,
+                    listen: false,
+                  );
+                  final updatedNote = NoteModel(
+                    title: widget.note.title,
+                    content: _contentController.text,
+                    color: widget.note.color,
+                    reminderTime: widget.note.reminderTime,
+                  );
+                  await noteProvider.updateNote(widget.noteIndex, updatedNote);
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Not kaydedildi.')));
+                },
+              ),
             ],
           ),
           Expanded(
@@ -363,23 +418,26 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                   ),
                   SizedBox(height: 8),
                   SizedBox(
-                    height: 80,
+                    height: 120,
                     child:
                         _audioFiles.isEmpty
                             ? Center(child: Text('Kayıt yok'))
                             : ListView.separated(
-                              scrollDirection: Axis.horizontal,
+                              scrollDirection: Axis.vertical,
                               itemCount: _audioFiles.length,
                               separatorBuilder:
-                                  (context, index) => SizedBox(width: 12),
+                                  (context, index) => SizedBox(height: 12),
                               itemBuilder: (context, index) {
                                 final file = _audioFiles[index];
-                                return ElevatedButton.icon(
-                                  onPressed: () => _playOrStopAudio(file.path),
-                                  icon: Icon(
-                                    _isPlaying ? Icons.stop : Icons.play_arrow,
-                                  ),
-                                  label: Text('Kayıt ${index + 1}'),
+                                return AudioPlayerWidget(
+                                  filePath: file.path,
+                                  index: index,
+                                  onDelete: () async {
+                                    await file.delete();
+                                    setState(() {
+                                      _audioFiles.removeAt(index);
+                                    });
+                                  },
                                 );
                               },
                             ),

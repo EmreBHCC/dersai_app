@@ -11,6 +11,9 @@ import 'package:provider/provider.dart';
 import 'provider/note_provider.dart';
 import 'package:dersai_app/services/notification_service.dart';
 import 'views/reminders_page.dart';
+import 'dart:io';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +26,23 @@ void main() async {
   final noteProvider = NoteProvider();
   await noteProvider.loadNotes();
   await NotificationService.init(); // Bildirim servisini başlat
+
+  // ANDROID 12+ EXPLICIT ALARM İZNİ
+  if (Platform.isAndroid) {
+    final deviceInfo = DeviceInfoPlugin();
+    final androidInfo = await deviceInfo.androidInfo;
+    if (androidInfo.version.sdkInt >= 31) {
+      final plugin = FlutterLocalNotificationsPlugin();
+      final androidImplementation =
+          plugin
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
+      // requestPermission yerine requestExactAlarmsPermission kullan
+      await androidImplementation?.requestExactAlarmsPermission();
+    }
+  }
+
   runApp(
     MultiProvider(
       providers: [
