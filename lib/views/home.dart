@@ -7,6 +7,7 @@ import '../widgets/color_picker.dart';
 import '../provider/note_provider.dart';
 import '../models/note_model.dart';
 import '../core/constants/size_config.dart';
+import 'tags_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -277,7 +278,10 @@ class HomePage extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // TODO: Etiketler sayfasına yönlendirme
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const TagsPage()),
+                        );
                       },
                       icon: const Icon(Icons.label),
                       label: const Text(
